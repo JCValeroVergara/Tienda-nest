@@ -15,10 +15,10 @@ export class ProductsService {
   
   constructor(
     
-    @InjectRepository(Product)
-    private readonly productRepository: Repository<Product>,
-    
-    ){}
+  @InjectRepository(Product)
+  private readonly productRepository: Repository<Product>,
+  
+  ){}
     
   async create(createProductDto: CreateProductDto) {
 
@@ -30,7 +30,6 @@ export class ProductsService {
     } catch (error) {
       this.handleDBExceptions(error);
     }
-
   }
 
   findAll() {
