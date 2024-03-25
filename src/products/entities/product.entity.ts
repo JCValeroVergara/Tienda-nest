@@ -40,8 +40,11 @@ export class Product {
   @Column('text')
   gender: string;
 
-
-  //tags: string[]; // This is a simple array of strings
+  @Column( 'text',{
+    array: true,
+    default: ['New'],
+  })
+  tags: string[];
   //images: string[]; // This is a simple array of strings
 
   @BeforeInsert()
