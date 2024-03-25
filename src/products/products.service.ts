@@ -6,6 +6,7 @@ import { DataSource, Repository } from 'typeorm';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import {validate as isUUID} from 'uuid'
 import { Product, ProductImage } from './entities';
+import e from 'express';
 
 @Injectable()
 export class ProductsService {
@@ -102,13 +103,30 @@ export class ProductsService {
 
     //Query runner
     const queryRunner = this.dataSource.createQueryRunner();
-
-
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
     try {
-      await this.productRepository.save(product);
-      return product;
+      if (images) {
+        await queryRunner.manager.delete(ProductImage, { product: { id } });
+        
+        product.images = images.map(
+          image => this.productImageRepository.create({ url: image }));
+      }
+
+      
+      await queryRunner.manager.save(product);
+      // await this.productRepository.save(product);
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
+
+      return this.findOnePlain(id);
+
     } catch (error) {
+
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
+
       this.handleDBExceptions(error);
     }
 
