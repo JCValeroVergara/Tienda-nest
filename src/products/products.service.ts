@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException, Query } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -114,7 +114,7 @@ export class ProductsService {
           image => this.productImageRepository.create({ url: image }));
       }
 
-      
+
       await queryRunner.manager.save(product);
       // await this.productRepository.save(product);
       await queryRunner.commitTransaction();
@@ -148,4 +148,20 @@ export class ProductsService {
     throw new InternalServerErrorException('Error creating product, check server logs');
   }
 
+
+  //Delete todos los productos, solo para pruebas de desarrollo, no se debe usar en producción
+  async deleteAllProducts() {
+    const query = this.productRepository.createQueryBuilder('product');
+
+    try {
+      return await query
+        .delete()
+        .where({})
+        .execute();
+
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+
+  }
 }
