@@ -2,6 +2,7 @@ import { Reflector } from '@nestjs/core';
 import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { User } from 'src/auth/entities';
+import { META_ROLES } from 'src/auth/decorators/role-protected.decorator';
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {
@@ -14,7 +15,7 @@ export class UserRoleGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     
-    const validRoles = this.reflector.get<string[]>('roles', context.getHandler());
+    const validRoles = this.reflector.get<string[]>(META_ROLES, context.getHandler());
     
     // valida el rol del usuario
     const req = context.switchToHttp().getRequest();
