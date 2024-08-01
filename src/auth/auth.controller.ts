@@ -9,7 +9,6 @@ import { UserRoleGuard } from './guards/user-role/user-role.guard';
 
 
 
-
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -25,34 +24,31 @@ export class AuthController {
   }
 
   @Get('private')
-  @UseGuards( AuthGuard() ) // 👈 Add this line
+  @UseGuards(AuthGuard()) // 👈 Add this line
   testingPrivateRoute(
-
     @GetUser() user: User,
     @GetUser('email') userEmail: string,
 
-    @RawHeaders() rawHeaders: string[]
+    @RawHeaders() rawHeaders: string[],
   ) {
-
-
-    return{
+    return {
       ok: true,
       message: 'You have access to this route',
       user,
       userEmail,
-      rawHeaders
-    }
+      rawHeaders,
+    };
   }
-
 
   @Get('private2')
   @SetMetadata('roles', ['admin']) // 👈 Add this line
-  @UseGuards( AuthGuard(), UserRoleGuard ) // 👈 Add this line
-  testingPrivateRoute2() {
-    return{
+  @UseGuards(AuthGuard(), UserRoleGuard) // 👈 Add this line
+  testingPrivateRoute2(
+    @GetUser() user: User)
+  {
+    return {
       ok: true,
-      message: 'You have access to this route'
-    }
+      user,
+    };
   }
-
 }
