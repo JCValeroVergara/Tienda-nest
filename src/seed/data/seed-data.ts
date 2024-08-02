@@ -1,19 +1,20 @@
+import * as bcrypt from 'bcrypt';
 
 // This file is used to seed the database with initial data.
 interface SeedProduct {
-    description: string;
-    images: string[];
-    stock: number;
-    price: number;
-    sizes: ValidSizes[];
-    slug: string;
-    tags: string[];
-    title: string;
-    type: ValidTypes;
-    gender: 'men'|'women'|'kid'|'unisex'
+  description: string;
+  images: string[];
+  stock: number;
+  price: number;
+  sizes: ValidSizes[];
+  slug: string;
+  tags: string[];
+  title: string;
+  type: ValidTypes;
+  gender: 'men' | 'women' | 'kid' | 'unisex';
 }
 
-type ValidSizes = 'XS'|'S'|'M'|'L'|'XL'|'XXL'|'XXXL';
+type ValidSizes = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
 type ValidTypes = 'shirts' | 'pants' | 'hoodies' | 'hats';
 
 interface SeedUser {
@@ -23,43 +24,41 @@ interface SeedUser {
   roles: string[];
 }
 
-
 interface SeedData {
-    users: SeedUser[];
-    products: SeedProduct[];
+  users: SeedUser[];
+  products: SeedProduct[];
 }
-
 
 export const initialData: SeedData = {
   users: [
     {
       email: 'test1@gmail.com',
       fullName: 'Test User',
-      password: 'Abc123',
+      password: bcrypt.hashSync('Abc123', 10),
       roles: ['admin'],
     },
     {
       email: 'test2@gmail.com',
       fullName: 'Test User 2',
-      password: 'Abc123',
+      password: bcrypt.hashSync('Abc123', 10),
       roles: ['super-user'],
     },
     {
       email: 'test3@gmail.com',
       fullName: 'Test User 3',
-      password: 'Abc123',
+      password: bcrypt.hashSync('Abc123', 10),
       roles: ['user', 'admin'],
     },
     {
       email: 'test4@gmail.com',
       fullName: 'Test User 4',
-      password: 'Abc123',
+      password: bcrypt.hashSync('Abc123', 10),
       roles: ['user'],
     },
     {
       email: 'test5@gmail.com',
       fullName: 'Test User 5',
-      password: 'Abc123',
+      password: bcrypt.hashSync('Abc123', 10),
       roles: ['user'],
     },
   ],
@@ -745,4 +744,3 @@ export const initialData: SeedData = {
     },
   ],
 };
-
