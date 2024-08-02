@@ -22,7 +22,7 @@ export class CreateUserDto {
   fullName: string;
 
   @IsString()
-  @IsIn(['admin', 'user'])
+  @IsIn(['admin', 'user', 'super-user'])
   @IsOptional()
   role: string;
 }
