@@ -6,7 +6,7 @@ import { DataSource, Repository } from 'typeorm';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import {validate as isUUID} from 'uuid'
 import { Product, ProductImage } from './entities';
-import e from 'express';
+import { User } from '../auth/entities';
 
 @Injectable()
 export class ProductsService {
@@ -28,13 +28,14 @@ export class ProductsService {
   
   ){}
     
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user: User) {
 
     try {
       const { images = [], ...productDetails } = createProductDto;
 
       const product = this.productRepository.create({
         ...productDetails,
+        user,
         images: images.map( image => this.productImageRepository.create({url: image})),
       });
       await this.productRepository.save(product);
@@ -90,16 +91,18 @@ export class ProductsService {
     }
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto, user: User) {
 
-    const { images, ...toUodate } = updateProductDto;
+    const { images, ...toUpdate } = updateProductDto;
 
 
-    const product = await this.productRepository.preload({ id, ...toUodate });
+    const product = await this.productRepository.preload({ id, ...toUpdate });
 
     if (!product) {
       throw new NotFoundException(`Product with id: ${id} not found`);
     }
+
+    product.user = user;
 
     //Query runner
     const queryRunner = this.dataSource.createQueryRunner();

@@ -6,15 +6,16 @@ import { CreateUserDto, LoginUserDto } from './dto';
 
 import { AuthGuard } from '@nestjs/passport';
 import { User } from './entities';
-import { RawHeaders, GetUser } from './decorators';
+import { RawHeaders, GetUser, Auth } from './decorators';
 import { UserRoleGuard } from './guards/user-role/user-role.guard';
-
+import { RoleProtected } from './decorators/role-protected.decorator';
+import { ValidRoles } from './interfaces';
 
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('register')
   createUser(@Body() createUserDto: CreateUserDto) {
@@ -26,35 +27,48 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
-  @Get('private')
-  @UseGuards( AuthGuard() ) // 👈 Add this line
-  testingPrivateRoute(
+  @Get('check-status')
+  @Auth()
+  checkAuthStatus(
+    @GetUser() user: User,
+  ) {
+    return this.authService.checkAuthStatus( user);
+  }
 
+  @Get('private')
+  @UseGuards(AuthGuard()) // 👈 Add this line
+  testingPrivateRoute(
     @GetUser() user: User,
     @GetUser('email') userEmail: string,
 
-    @RawHeaders() rawHeaders: string[]
+    @RawHeaders() rawHeaders: string[],
   ) {
-
-
-    return{
+    return {
       ok: true,
       message: 'You have access to this route',
       user,
       userEmail,
-      rawHeaders
-    }
+      rawHeaders,
+    };
   }
 
-
+  // @SetMetadata('roles', ['admin']) // 👈 Add this line
   @Get('private2')
-  @SetMetadata('roles', ['admin']) // 👈 Add this line
-  @UseGuards( AuthGuard(), UserRoleGuard ) // 👈 Add this line
-  testingPrivateRoute2() {
-    return{
+  @RoleProtected(ValidRoles.ADMIN) // 👈 Add this line
+  @UseGuards(AuthGuard(), UserRoleGuard) // 👈 Add this line
+  testingPrivateRoute2(@GetUser() user: User) {
+    return {
       ok: true,
-      message: 'You have access to this route'
-    }
+      user,
+    };
   }
 
+  @Get('private3')
+  @Auth( ValidRoles.ADMIN) // 👈 Add this line
+  testingPrivateRoute3(@GetUser() user: User) {
+    return {
+      ok: true,
+      user,
+    };
+  }
 }
