@@ -2,10 +2,11 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, Prima
 import { ApiProperty } from '@nestjs/swagger';
 
 import { ProductImage } from './';
-import { User } from '../../auth/entities/user.entity';
+import { User } from 'src/auth/entities';
 
-@Entity({ name: 'products' })
-export class Product {
+@Entity({name: 'products'})
+export class Product { 
+
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -52,7 +53,7 @@ export class Product {
   gender: string;
 
   @ApiProperty()
-  @Column('text', {
+  @Column( 'text',{
     array: true,
     default: ['New'],
   })
@@ -60,10 +61,14 @@ export class Product {
 
   //images:
   @ApiProperty()
-  @OneToMany(() => ProductImage, (image) => image.product, {
-    cascade: true,
-    eager: true,
-  })
+  @OneToMany(
+    () => ProductImage,
+    (image) => image.product,
+    {
+      cascade: true,
+      eager: true,
+    }
+  )
   images?: ProductImage[];
 
   @ManyToOne(() => User, (user) => user.product, { eager: true })

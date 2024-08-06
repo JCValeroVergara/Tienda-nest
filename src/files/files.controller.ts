@@ -1,13 +1,20 @@
-import { Controller, Get, Post, Param, UploadedFile, UseInterceptors, BadRequestException, Res } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, UseInterceptors, BadRequestException, Res } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
 import { FilesService } from './files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { fileFilter, fileNamer } from './helpers';
 import { diskStorage } from 'multer';
 import { Response } from 'express';
+<<<<<<< HEAD
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Files - Get and Upload')
+=======
+import { ConfigService } from '@nestjs/config';
+
+@ApiTags('Files Upload')
+>>>>>>> 7b42464aa706ac545888615d4b2aa2c0e9c3e98b
 @Controller('files')
 export class FilesController {
   constructor(

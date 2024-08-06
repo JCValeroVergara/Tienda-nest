@@ -1,5 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, SetMetadata } from '@nestjs/common';
+<<<<<<< HEAD
 import { ApiTags } from '@nestjs/swagger';
+=======
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+
+>>>>>>> 7b42464aa706ac545888615d4b2aa2c0e9c3e98b
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dto';
 
@@ -12,6 +17,10 @@ import { ValidRoles } from './interfaces';
 
 
 @ApiTags('Auth')
+<<<<<<< HEAD
+=======
+@ApiBearerAuth()
+>>>>>>> 7b42464aa706ac545888615d4b2aa2c0e9c3e98b
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
